@@ -1,27 +1,33 @@
 <template>
-  <div class="popup-window" v-for="(popup, index) in openedPopups" :key="index"
-    :style="{ top: popup.posY + 'px', left: popup.posX + 'px', width: popup.width + 'px', height: popup.height + 'px' }"
-    @mousedown="startDrag($event, index)">
-    <div class="content">
-      <!-- Contenido de la ventana emergente -->
+  <div class="popup-window" v-for="(popup, index) in openedPopups" :key="index" :style="{
+    top: popup.posY + 'px',
+    left: popup.posX + 'px',
+    width: popup.width + 'px',
+    height: popup.height + 'px'
+  }">
+    <!-- HEADER MODERNO -->
+    <div class="popup-header" @mousedown="startDrag($event, index)">
+      <div class="popup-title">
+        {{ popup.componentName }}
+      </div>
+
+      <div class="window-controls">
+        <button class="control-btn close" @click="store.closePopup(index)">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="popup-content">
       <component :is="getComponentName(index)" />
     </div>
-    <div class="btn-group">
-      <button @click="store.closePopup(index)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x"
-          viewBox="0 0 16 16">
-          <path
-            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-        </svg>
-      </button>
-      <button @mousedown="startResize($event, index)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-          class="bi bi-textarea-resize" viewBox="0 0 16 16">
-          <path
-            d="M0 4.5A2.5 2.5 0 0 1 2.5 2h11A2.5 2.5 0 0 1 16 4.5v7a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 11.5zM2.5 3A1.5 1.5 0 0 0 1 4.5v7A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 13.5 3zm10.854 4.646a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708l3-3a.5.5 0 0 1 .708 0m0 2.5a.5.5 0 0 1 0 .708l-.5.5a.5.5 0 0 1-.708-.708l.5-.5a.5.5 0 0 1 .708 0" />
-        </svg>
-      </button>
-    </div>
+
+    <!-- RESIZE HANDLE -->
+    <div class="resize-handle" @mousedown="startResize($event, index)"></div>
   </div>
 </template>
+
 
 <script setup>
 import { usePopupStore } from "@/store/PopupStore";
@@ -112,43 +118,161 @@ watch(() => openedPopups.value.length, (newValue) => {
 </script>
 
 <style scoped>
+/* =========================
+   POPUP CONTAINER
+========================= */
+
 .popup-window {
   position: absolute;
-  background-color: transparent;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
-.content {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-
-.btn-group {
   display: flex;
-  justify-content: flex-end;
-  position: absolute;
-  bottom: 7px;
-  right: 10px;
-  gap: 5px;
-  background-color: #24292F;
-  border: none;
-  border-radius: 3px;
+  flex-direction: column;
+
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.12),
+    0 10px 30px rgba(0, 0, 0, 0.06);
+
+  overflow: hidden;
+
+  animation: popupFade 0.28s cubic-bezier(.22,.61,.36,1);
+  transition: box-shadow 0.3s ease;
 }
 
-.btn-group button {
-  background-color: transparent;
-  color: white;
+.popup-window:hover {
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.14),
+    0 12px 35px rgba(0, 0, 0, 0.07);
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes popupFade {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.popup-header {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+
+  cursor: grab;
+  user-select: none;
+
+  transition: background 0.25s ease;
+}
+
+.popup-header:active {
+  cursor: grabbing;
+}
+
+.popup-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: #444;
+  text-transform: uppercase;
+}
+
+/* =========================
+   CONTENT AREA
+========================= */
+
+.popup-content {
+  flex: 1;
+  overflow: auto;
+  padding: 22px;
+  color: #2c2c2c;
+}
+
+/* =========================
+   WINDOW CONTROLS
+========================= */
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.control-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 12px;
   border: none;
-  border-radius: 3px;
   cursor: pointer;
+  font-size: 14px;
+  transition: all 0.25s ease;
+
+  backdrop-filter: blur(10px);
 }
 
-.btn-group button:hover {
-  background-color: #4c4d54;
+/* Close Button */
+.control-btn.close {
+  background: rgba(255, 95, 87, 0.15);
+  color: #d64545;
 }
+
+.control-btn.close:hover {
+  background: #e54848;
+  color: white;
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(229, 72, 72, 0.3);
+}
+
+/* =========================
+   RESIZE HANDLE
+========================= */
+
+.resize-handle {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  cursor: se-resize;
+  border-radius: 6px;
+
+  background: linear-gradient(
+    135deg,
+    transparent 40%,
+    rgba(0, 0, 0, 0.25) 40%,
+    rgba(0, 0, 0, 0.25) 60%,
+    transparent 60%
+  );
+
+  opacity: 0.35;
+  transition: 0.25s ease;
+}
+
+.resize-handle:hover {
+  opacity: 0.75;
+}
+
 </style>

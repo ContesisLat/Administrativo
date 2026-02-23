@@ -79,7 +79,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-//import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import axios from 'axios';
 import { UrlGlobal } from '@/store/dominioGlobal';
 

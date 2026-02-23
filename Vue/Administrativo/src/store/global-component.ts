@@ -1,6 +1,6 @@
 import { Component } from 'vue';
 
-import Scgparametros from '@/views/Contabilidad/modelos/ScgParametros.vue';
+import ScgParametros from '@/views/Contabilidad/modelos/ScgParametros.vue';
 import ScgGpoCtas from '@/views/Contabilidad/modelos/ScgGpoCtas.vue';
 
  
@@ -11,8 +11,8 @@ import ScgGpoCtas from '@/views/Contabilidad/modelos/ScgGpoCtas.vue';
 // objeto que contiene todos los componentes globales
  
 const globalComponents: Record<string, Component> = {
-  Scgparametros,
-  ScgGpoCtas
+  ScgParametros,
+  ScgGpoCtas,
 
 };
 

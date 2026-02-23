@@ -1,199 +1,328 @@
 <template>
-  <!-- Botón para abrir el menú -->
-  <a class="btn" @click="cargarProgramas(perfil)" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
-    aria-controls="offcanvasExample" style="color: white; border: none; border-radius: 5px;">
+  <!-- Botón abrir sidebar -->
+  <button class="menu-btn" @click="toggleSidebar">
     ☰
-  </a>
+  </button>
 
-  <!-- Panel lateral -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <!-- Overlay oscuro -->
+  <div v-if="isSidebarOpen" class="overlay" @click="toggleSidebar"></div>
 
-    <div class="offcanvas-header">
-      <h3>Contabilidad General</h3>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-
-    <div class="offcanvas-body d-flex flex-column gap-2">
-
-      <!-- Iteramos sobre los programas -->
-      <div class="btn-group dropend" v-for="(programa, index) in programas" :key="index">
-
-        <!-- Nombre del programa -->
-        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-          {{ programa.proceso }}
-        </a>
-
-        <!-- Subprogramas -->
-        <ul class="dropdown-menu" style="cursor: pointer;">
-          <div class="dropdown-inner">
-
-            <li v-for="(sub, i) in programa.subprogramas" :key="i" @click="store.openPopup(sub.programa)">
-              <a class="dropdown-item">{{ sub.descripcion }}</a>
-            </li>
-
-            <!-- Si no tiene subprogramas -->
-            <li v-if="programa.subprogramas.length === 0">
-              <a class="dropdown-item disabled" aria-disabled="true">
-                Sin subprogramas
-              </a>
-            </li>
-
-          </div>
-        </ul>
-
+  <!-- SIDEBAR -->
+  <transition name="sidebar">
+    <aside v-if="isSidebarOpen" class="sidebar">
+      <div class="sidebar-header">
+        <h5 class="sidebar-title">Contabilidad General</h5>
+        <button class="close-btn" @click="toggleSidebar">✕</button>
       </div>
 
-    </div>
-  </div>
+      <div class="sidebar-body">
+
+        <!-- APLICACIONES -->
+        <div v-for="(app, aIndex) in programas" :key="aIndex">
+
+          <!-- Aplicación -->
+          <div
+            class="app-item"
+            :class="{ activeApp: activeApp === aIndex }"
+            @click="toggleApp(aIndex)"
+          >
+            <span>{{ app.aplicacion }}</span>
+            <span class="arrow" :class="{ rotate: activeApp === aIndex }">⌄</span>
+          </div>
+
+          <!-- PROCESOS -->
+          <transition name="app-slide">
+            <div v-if="activeApp === aIndex" class="process-container">
+
+              <div
+                v-for="(proc, pIndex) in app.procesos"
+                :key="pIndex"
+                class="process-wrapper"
+              >
+                <!-- Proceso -->
+                <div
+                  class="process-item"
+                  :class="{ activeProcess: activeProcess === aIndex + '-' + pIndex }"
+                  @click="toggleProcess(aIndex, pIndex)"
+                >
+                  {{ proc.proceso }}
+                  <span
+                    class="dot"
+                    v-if="activeProcess === aIndex + '-' + pIndex"
+                  ></span>
+                </div>
+
+                <!-- SUBPROGRAMAS FLOTANTES -->
+                <transition name="float-right">
+                  <div
+                    v-if="activeProcess === aIndex + '-' + pIndex"
+                    class="sub-floating"
+                  >
+                    <div
+                      v-for="(sub, sIndex) in proc.subprogramas"
+                      :key="sIndex"
+                      class="sub-item"
+                      :class="{ activeSub: activeSub === sub.programa }"
+                      @click="openProgram(sub.programa)"
+                    >
+                      {{ sub.descripcion }}
+                    </div>
+                  </div>
+                </transition>
+
+              </div>
+
+            </div>
+          </transition>
+
+        </div>
+
+      </div>
+    </aside>
+  </transition>
 </template>
 
-
-
 <script lang="ts" setup>
-import { usePopupStore } from '@/store/PopupStore';
-import { ref, watch, computed, onMounted } from 'vue'
-import axios from 'axios';
-import { UrlGlobal } from '@/store/dominioGlobal';
-import { userGlobalStore } from '@/store/userGlobal';
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { usePopupStore } from '@/store/PopupStore'
+import { UrlGlobal } from '@/store/dominioGlobal'
+import { userGlobalStore } from '@/store/userGlobal'
 
 const store = usePopupStore()
 const dUrl = UrlGlobal()
 const userStore = userGlobalStore()
 
-const usuario = ref<any[]>([]);
+const usuario = ref<any[]>([])
 const perfil = ref('')
+
+// Sidebar estado
+const isSidebarOpen = ref(false)
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
+  if (isSidebarOpen.value) cargarProgramas(perfil.value)
+}
+
 onMounted(async () => {
-  const responseO = await axios.get(dUrl.urlGlobal + `/api/seguser/filter?nombre_usuario=${userStore.globalUser}`)
+  const responseO = await axios.get(
+    dUrl.urlGlobal + `/api/seguser/filter?nombre_usuario=${userStore.globalUser}`
+  )
   usuario.value = responseO.data
   perfil.value = usuario.value[0]?.perfil
 })
 
-const programas = ref<any[]>([]);
+const programas = ref<any[]>([])
+
 const cargarProgramas = async (perfil: string) => {
   try {
-    const response = await axios.post(dUrl.urlGlobal + "/api/procesos_subprogramas", {
-      perfil: perfil,
-    });
-    programas.value = response.data;
-    console.log(programas.value)
+    const response = await axios.post(
+      dUrl.urlGlobal + '/api/procesos_subprogramas',
+      { perfil }
+    )
+    programas.value = response.data
   } catch (error) {
-    console.error("Error cargando programas:", error);
+    console.error('Error cargando programas:', error)
   }
-};
+}
 
+/* Estado UI */
+const activeApp = ref<number | null>(null)
+const activeProcess = ref<string | null>(null)
+const activeSub = ref<string | null>(null)
 
+const toggleApp = (index: number) => {
+  activeApp.value = activeApp.value === index ? null : index
+  activeProcess.value = null
+}
+
+const toggleProcess = (aIndex: number, pIndex: number) => {
+  const key = aIndex + '-' + pIndex
+  activeProcess.value = activeProcess.value === key ? null : key
+}
+
+const openProgram = (programa: string) => {
+  activeSub.value = programa
+  store.openPopup(programa)
+}
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-body {
-  font-family: 'Poppins', sans-serif;
-}
-
-
-
-.btn {
-  background-color: #001982;
-  padding: 4px 9px;
-  font-size: 15px;
-  transition: transform 0.2s ease;
-}
-
-.btn:focus {
-  background-color: #001982;
-
-}
-
-.btn:active {
-  transform: scale(0.95);
-}
-
-/* Asegura que el menú esté disponible para animar */
-.dropdown-menu {
-  display: block !important;
-  padding: 8px;
-  background: transparent;
+/* ============================= */
+/* BOTÓN MENÚ */
+/* ============================= */
+.menu-btn {
+  background: #2563eb;
+  color: #fff;
   border: none;
-  visibility: hidden;
-  pointer-events: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+}
+.menu-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
 
-/* Contenedor interno animado */
-.dropdown-inner {
-  background: rgba(255,255,255,0.95); 
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 18px 40px rgba(6, 18, 50, 0.22);
-  transform-origin: 0 0;
-  transform: scale(0.96) translateX(-6px);
+/* ============================= */
+/* OVERLAY OSCURO */
+/* ============================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
+
+/* ============================= */
+/* SIDEBAR ERP PROFESIONAL */
+/* ============================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  background: #ffffff;
+  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-header {
+  padding: 18px;
+  border-bottom: 1px solid #eef2f7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* ============================= */
+/* TRANSICIONES SIDEBAR */
+/* ============================= */
+.sidebar-enter-active {
+  transition: all 0.35s cubic-bezier(.16,1,.3,1);
+}
+.sidebar-leave-active {
+  transition: all 0.25s ease;
+}
+.sidebar-enter-from {
+  transform: translateX(-100%);
   opacity: 0;
-  transition: transform 0.33s cubic-bezier(.22,.9,.3,1), 
-              opacity 0.33s ease, 
-              box-shadow 0.33s ease;
-  backdrop-filter: blur(6px);
+}
+.sidebar-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+.sidebar-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+.sidebar-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
 }
 
-/* Cuando el menú se abre */
-.show.dropdown-menu {
-  visibility: visible;
-  pointer-events: auto;
+/* ============================= */
+/* BOTÓN CERRAR */
+/* ============================= */
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
 }
-
-.show.dropdown-menu .dropdown-inner {
-  transform: scale(1) translateX(0);
+.close-btn:hover {
   opacity: 1;
 }
 
+/* ============================= */
+/* APLICACIONES, PROCESOS Y SUBPROGRAMAS */
+/* ============================= */
+.app-item {
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.25s ease;
+  margin-bottom: 5px;
+  position: relative;
+}
+.app-item:hover { background: #f3f4f6; }
+.activeApp { background: #eff6ff; color: #2563eb; }
+.activeApp::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 20%;
+  height: 60%;
+  width: 4px;
+  border-radius: 4px;
+  background: #2563eb;
+}
+.arrow { transition: transform 0.3s ease; font-size: 12px; opacity: 0.6; }
+.rotate { transform: rotate(180deg); }
 
-/* ===========================================
-   ANIMACIÓN PREMIUM PARA EL SIDEBAR (OFFCANVAS)
-=========================================== */
-
-/* Estado inicial (oculto) */
-.offcanvas {
-  transform: translateX(-30px);      /* No tan lejos → más fluido */
-  opacity: 0;                        /* Se desvanece en vez de aparecer de golpe */
-  transition:
-    transform 0.30s cubic-bezier(.25,.8,.25,1),
-    opacity 0.25s ease;
-  will-change: transform, opacity;
-  box-shadow: none !important;
-  
+.process-container { margin-left: 12px; padding-left: 12px; border-left: 1px solid #e5e7eb; }
+.process-wrapper { margin-bottom: 4px; }
+.process-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.process-item:hover { background: #f9fafb; }
+.activeProcess { background: #e0edff; color: #2563eb; }
+.dot {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: #2563eb;
+  border-radius: 50%;
 }
 
-/* Cuando está visible (Bootstrap agrega .show) */
-.offcanvas.show {
-  transform: translateX(0);          /* Entra suave */
-  opacity: 1;                        /* Se desvanece */
-  box-shadow: 8px 0 35px rgba(0,0,0,0.25) !important;
+.sub-floating { margin-top: 4px; margin-left: 14px; padding-left: 10px; border-left: 1px dashed #e5e7eb; }
+.sub-item {
+  padding: 6px 10px;
+  font-size: 12.5px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: #4b5563;
 }
+.sub-item:hover { background: #f3f4f6; }
+.activeSub { background: #eff6ff; color: #2563eb; font-weight: 500; }
 
-/* Cerrar con animación también (Bootstrap quita .show,
-   pero TRABAJA el frame antes de ocultarlo completamente) */
-.offcanvas.hiding {
-  transform: translateX(-20px);      /* Se va un poco hacia atrás */
-  opacity: 0;                        /* Se desvanece */
-  transition:
-    transform 0.35s cubic-bezier(.4,0,.2,1),
-    opacity 0.3s ease;
-}
-
-/* Contenido interno con "delay suave" */
-.offcanvas-body {
-  opacity: 0;
-  transform: translateX(-10px) scale(0.98);
-  transition:
-    opacity 0.35s ease,
-    transform 0.4s cubic-bezier(.25,.9,.3,1);
-  will-change: opacity, transform;
-}
-
-/* Cuando el panel está abierto*/
-.offcanvas.show .offcanvas-body {
-  opacity: 1;
-  transform: translateX(0) scale(1);
-}
-
+/* ============================= */
+/* TRANSICIONES INTERIORES VUE */
+/* ============================= */
+.app-slide-enter-active, .app-slide-leave-active { transition: all 0.25s ease; }
+.app-slide-enter-from, .app-slide-leave-to { opacity: 0; transform: translateY(-6px); }
+.float-right-enter-active, .float-right-leave-active { transition: all 0.2s ease; }
+.float-right-enter-from, .float-right-leave-to { opacity: 0; transform: translateY(-4px); }
 
 </style>
+
+

@@ -1,91 +1,74 @@
 <template>
+  <div class="glass-wrapper">
 
-  <body>
-    <div class="Card">
-      <section class="layout">
-        <div class="header">
-          <div class="btn-search">
-            <span><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
-                class="bi bi-search" viewBox="0 0 16 16">
-                <path
-                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-              </svg></span>
-            <input type="search" id="search" placeholder="Buscar"
-              style="background-color: transparent; border: none; outline: none; color: white;" autocomplete="off" v-model="search">
-          </div>
-        </div>
-        <div class="container">
-          <div class="row">
-            <div class="col d-flex flex-column justify-content-center align-items-center">
-              <h3><strong>Naturaleza</strong></h3>
-              <div class="card overflow-scroll">
-                <table class="table table-hover table-sm">
-                  <thead>
-                    <tr>
-                      <th>Naturaleza</th>
-                      <th>Nombre</th>
-                      <th>Cargo</th>
-                      <th>Descripcion</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="elm in filteredCarga" :key="elm.naturaleza"
-                      @click="FunClick(elm.naturaleza, elm.nombre, elm.status)">
-                      <td>{{ elm.naturaleza }}</td>
-                      <td>{{ elm.nombre }}</td>
-                      <td>{{ elm.cargo }}</td>
-                      <td>{{ elm.nom_cargo }}</td>
-                      <td>{{ elm.nom_status }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="btn-group">
-                <button class="btn-insert" @click.prevent="CbtnIn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-upload" viewBox="0 0 16 16">
-                    <path
-                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                    <path
-                      d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
-                  </svg>
-                </button>
-                <button class="btn-update" @click.prevent="CbtnUp">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-pencil-square" viewBox="0 0 16 16">
-                    <path
-                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                    <path fill-rule="evenodd"
-                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                  </svg>
-                </button>
-                <button class="btn-delete" @click.prevent="CbtnDl">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-trash3" viewBox="0 0 16 16">
-                    <path
-                      d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <UpCarNatur v-if="btnUp" :natur="natur" :nombre="nombre" :status="status" :btnUp="btnUp"
-          @updateProps="updatePropsValue" />
-        <InCarNatur v-if="btnIn" :btnIn="btnIn" @insertProps="insertPropsValue" />
-        <DlCarNatur v-if="btnDl" :btnDl="btnDl" :natur="natur" @deleteProps="deletePropsValue" />
-      </section>
+    <!-- HEADER -->
+    <div class="top-bar">
+      <div class="title">Naturaleza</div>
+
+      <div class="search-box">
+        <svg viewBox="0 0 16 16" width="14">
+          <path
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+            fill="currentColor" />
+        </svg>
+        <input type="search" placeholder="Buscar..." v-model="search" />
+      </div>
     </div>
-  </body>
+
+    <!-- TABLE -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Naturaleza</th>
+            <th>Nombre</th>
+            <th>Cargo</th>
+            <th>Descripción</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="elm in filteredCarga" :key="elm.naturaleza"
+            @click="FunClick(elm.naturaleza, elm.nombre, elm.status)">
+            <td>{{ elm.naturaleza }}</td>
+            <td>{{ elm.nombre }}</td>
+            <td>{{ elm.cargo }}</td>
+            <td>{{ elm.nom_cargo }}</td>
+            <td>
+              <span class="status-pill">
+                {{ elm.nom_status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions">
+      <button class="action-btn insert" @click.prevent="CbtnIn">Insertar</button>
+      <button class="action-btn update" @click.prevent="CbtnUp">Actualizar</button>
+      <button class="action-btn delete" @click.prevent="CbtnDl">Eliminar</button>
+    </div>
+
+    <!-- MODALES -->
+    <UpCarNatur v-if="btnUp" :natur="natur" :nombre="nombre" :status="status" :btnUp="btnUp"
+      @updateProps="updatePropsValue" />
+
+    <InCarNatur v-if="btnIn" :btnIn="btnIn" @insertProps="insertPropsValue" />
+
+    <DlCarNatur v-if="btnDl" :btnDl="btnDl" :natur="natur" @deleteProps="deletePropsValue" />
+
+  </div>
 </template>
+
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { Natur } from '@/interface/interfaces'
 //import UpCarNatur from 'UpCarNatur.vue';
- 
+
 import { UrlGlobal } from '@/store/dominioGlobal';
 
 const dUrl = UrlGlobal()
@@ -189,110 +172,199 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-body {
-  height: 100%;
+.glass-wrapper {
   width: 100%;
-  background: transparent;
-  backdrop-filter: blur(10px);
-}
-
-.Card {
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 95%;
-  height: 95%;
+  height: 100%;
   display: flex;
-  border-radius: 10px;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  text-align: center;
   font-family: 'Poppins', sans-serif;
-  color: white;
-  background: linear-gradient(to right, #ccd0cf, #9ba8ab, #4a5c6a);
-  overflow: hidden;
-  @media screen and (max-width: 600px) {
-    overflow: scroll;
-  }
+  color: #2c2c2c;
 }
 
-.layout {
-  position: absolute;
-  width: 95%;
-  height: 95%;
+/* =========================
+   TOP BAR
+========================= */
 
-  display: grid;
-  grid:
-    "header" auto "container" 1fr / 1fr;
-  gap: 8px;
-}
-
-.header {
+.top-bar {
   display: flex;
-  justify-content: right;
-  align-items: right;
-  grid-area: header;
-}
-
-.container {
-  grid-area: container;
-}
-
-.card {
-  width: 85%;
-  height: 250px;
-  min-width: min-content;
-  box-sizing: border-box;
-}
-
-.btn-search {
-  border: none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  color: white;
-  padding-left: 3px;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: #3a3a3a;
+}
+
+/* =========================
+   SEARCH BOX PREMIUM
+========================= */
+
+.search-box {
   display: flex;
-  gap: 4px;
-  min-width: min-content;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+
+  transition: all 0.25s ease;
 }
 
-.btn-search:focus {
+.search-box:focus-within {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.search-box svg {
+  color: #777;
+}
+
+.search-box input {
+  border: none;
   outline: none;
+  background: transparent;
+  font-size: 14px;
+  width: 180px;
+  color: #333;
+  transition: 0.2s ease;
 }
 
-.btn-group {
+/* =========================
+   TABLE CONTAINER
+========================= */
+
+.table-wrapper {
+  flex: 1;
+  overflow: auto;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.75);
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+
+  transition: 0.3s ease;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background: rgba(255, 255, 255, 0.75);
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(10px);
+}
+
+th {
+  text-align: left;
+  padding: 16px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #666;
+  letter-spacing: 0.4px;
+}
+
+td {
+  padding: 16px 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  color: #444;
+}
+
+tbody tr {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.002);
+}
+
+/* =========================
+   STATUS PILL
+========================= */
+
+.status-pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+
+  background: rgba(0, 123, 255, 0.12);
+  color: #007bff;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.actions {
   display: flex;
   justify-content: flex-end;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 14px;
+  margin-top: 22px;
 }
 
-.btn-group button {
+.action-btn {
+  padding: 10px 22px;
+  border-radius: 18px;
   border: none;
-  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition: all 0.25s ease;
 }
 
-.btn-delete:hover,
-.btn-delete:focus {
-  background: #d94b6a;
-  color: white;
+/* Insert */
+.insert {
+  background: rgba(93, 116, 183, 0.15);
+  color: #3f5fa8;
 }
 
-.btn-update:hover,
-.btn-update:focus {
-  background: #bcd34a;
-  color: white;
+/* Update */
+.update {
+  background: rgba(188, 211, 74, 0.25);
+  color: #7a941a;
 }
 
-.btn-insert:hover,
-.btn-insert:focus {
-  background: #5d74b7;
-  color: white;
+/* Delete */
+.delete {
+  background: rgba(217, 75, 106, 0.18);
+  color: #c23c5d;
 }
+
+/* Hover effect premium */
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
 </style>

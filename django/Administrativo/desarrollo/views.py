@@ -75,55 +75,79 @@ def obtener_compania_agencia(request):
 
 @api_view(['POST'])
 def obtener_programas_y_subprogramas(request):
-    perfil = request.data.get('perfil')  # viene desde Vue
-
-    print(perfil)
+    perfil = request.data.get('perfil')
 
     if not perfil:
         return Response({"error": "Falta el perfil"}, status=400)
 
     with connections['default'].cursor() as cursor:
 
-        # Obtener solo los procesos que tengan subprogramas
+        # 1 Aplicaciones permitidas por perfil
         cursor.execute("""
-            SELECT DISTINCT p.proceso, p.descripcion
-            FROM segproc p
-            JOIN segpape s ON p.proceso = s.proceso
-            WHERE s.perfil = %s
-            ORDER BY p.proceso
+            SELECT DISTINCT a.aplicacion, a.descripcion
+            FROM segaplic a
+            INNER JOIN segpape sp 
+                ON a.aplicacion = sp.aplicacion
+            WHERE sp.perfil = %s
+            ORDER BY a.descripcion
         """, [perfil])
 
-        programas = cursor.fetchall()  # [(proceso, descripcion)]
-
+        aplicaciones = cursor.fetchall()
         resultado = []
 
-        for proceso, descripcion in programas:
+        for aplicacion, desc_aplicacion in aplicaciones:
 
-            # Traer subprogramas + descripción desde segprog
+            # 2 TODOS los procesos de la aplicación
             cursor.execute("""
-                SELECT s.programa, sp.descripcion
-                FROM segpape s
-                JOIN segprog sp ON s.programa = sp.programa
-                WHERE s.proceso = %s AND s.perfil = %s
-                ORDER BY sp.descripcion
-            """, [proceso, perfil])
+                SELECT p.proceso, p.descripcion
+                FROM segproc p
+                WHERE p.aplicacion = %s
+                ORDER BY p.descripcion
+            """, [aplicacion])
 
-            subprogramas = cursor.fetchall()  # [(programa, descripcion_sub)]
+            procesos = cursor.fetchall()
+            procesos_list = []
 
-            if subprogramas:
+            for proceso, desc_proceso in procesos:
+
+                # 3 Subprogramas autorizados para el perfil
+                cursor.execute("""
+                    SELECT DISTINCT g.programa, g.descripcion
+                    FROM segprog g
+                    INNER JOIN segpape sp
+                        ON g.programa = sp.programa
+                    WHERE sp.perfil = %s
+                      AND sp.aplicacion = %s
+                      AND sp.proceso = %s
+                      AND g.aplicacion = %s
+                      AND g.proceso = %s
+                      AND (g.status = 'A' OR g.status IS NULL)
+                    ORDER BY g.descripcion
+                """, [perfil, aplicacion, proceso, aplicacion, proceso])
+
+                subprogramas = cursor.fetchall()
+
+                # Solo mostrar proceso si tiene subprogramas permitidos
+                if subprogramas:
+                    procesos_list.append({
+                        "proceso": desc_proceso,
+                        "subprogramas": [
+                            {
+                                "programa": programa,
+                                "descripcion": descripcion
+                            }
+                            for programa, descripcion in subprogramas
+                        ]
+                    })
+
+            # Solo mostrar aplicación si tiene procesos válidos
+            if procesos_list:
                 resultado.append({
-                    "proceso": descripcion,  # descripción del programa
-                    "subprogramas": [
-                        {
-                            "programa": r[0],
-                            "descripcion": r[1]
-                        } 
-                        for r in subprogramas
-                    ]
+                    "aplicacion": desc_aplicacion,
+                    "procesos": procesos_list
                 })
 
     return Response(resultado)
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EnviarCorreoView(View):

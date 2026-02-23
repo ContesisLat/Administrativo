@@ -1,11 +1,11 @@
-import { createRouter,createWebHistory,RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory} from 'vue-router'
 import PageLogin from '@/components/PageLogin.vue';
 import PrinPage from '@/components/PrinPage.vue';
 
-const routes:Array<RouteRecordRaw> = [
+const routes = [
     {
         path: "/",
-        redirect: to => {return{name:'PageLogin'}}
+        redirect: (to: any) => ({ name: 'PageLogin' })
     },
     {
         path:'/PageLogin',
@@ -21,7 +21,7 @@ const routes:Array<RouteRecordRaw> = [
 
 ]
 const router = createRouter({
-    history:createWebHistory(process.env.BASE_URL),
+    history: createWebHistory(process.env.BASE_URL),
     routes
 })
 

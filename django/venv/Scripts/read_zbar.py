@@ -1,4 +1,4 @@
-#!D:\Contesis\AplicacionPy\Administrativo\App\django\venv\Scripts\python.exe
+#!C:\Users\Contesis\OneDrive\Documentos\Administrativo\django\venv\Scripts\python.exe
 from __future__ import print_function
 
 import argparse

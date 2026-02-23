@@ -139,7 +139,7 @@ DATABASES = {
     },
      'contabilidad_db': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':'copadasapma',
+        'NAME':'agimsa',
         'USER':'postgres',
         'PASSWORD':'postgres',
         #'HOST':'10.20.10.13',

@@ -121,9 +121,16 @@ function updatePropsD(newValue:boolean){
     position: relative;
     height: 50px;
     width: 50px;
-    background-color:#001982;
+    background-color:#2563eb;
     border-radius: 50%;
     z-index: 2;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+
+}
+
+.fab-container .fab:hover{
+  background: #1d4ed8;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
 }
 
 .fab-container .fab .fab-content{
