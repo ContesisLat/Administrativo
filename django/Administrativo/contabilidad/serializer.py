@@ -1,6 +1,12 @@
 from rest_framework import serializers  
 from .models import *
+from desarrollo.models import SegPara
 
+class SegparaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SegPara
+        field = '__all__'
+        
 class ScgaageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scgaage
@@ -221,6 +227,21 @@ class ScgvariSerializer(serializers.ModelSerializer):
         model = Scgvari
         fields = '__all__'
 
+class ScgasctSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scgasct
+        fields = '__all__'
+
+class ScgasctaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scgascta
+        fields = '__all__'
+
+class ScgtercSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scgterc
+        fields = '__all__'
+        
 class SegpaagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Segpaag

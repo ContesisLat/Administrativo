@@ -124,7 +124,7 @@ class Scgcata(models.Model):
 class Scgclas(models.Model):
     tipo_aplica = models.CharField(max_length=4, null=False)
     clase = models.CharField(max_length=3, null=False)
-    descripcion = models.CharField(max_length=50, null=False)
+    descripcion = models.CharField(max_length=40, null=False)
     creado_por = models.CharField(max_length=10, null=False)
     fecha_creado = models.DateField()
     hora_creado = models.TimeField()
@@ -143,7 +143,7 @@ class Scgscla(models.Model):
     tipo_aplica = models.CharField(max_length=4, null=False)
     clase = models.CharField(max_length=3, null=False)
     subclase = models.CharField(max_length=3, null=False)
-    descripcion = models.CharField(max_length=50, null=False)
+    descripcion = models.CharField(max_length=40, null=False)
     creado_por = models.CharField(max_length=10, null=False)
     fecha_creado = models.DateField()
     hora_creado = models.TimeField()
@@ -529,6 +529,8 @@ class Scglisc(models.Model):
     creado_por = models.CharField(max_length=10, null=False)
     fecha_creado = models.DateField()
     hora_creado = models.TimeField()
+    cuenta = models.CharField(max_length=20)
+    tercero = models.CharField(max_length=6)
     status = models.CharField(max_length=1, null=False)
     modificado_por = models.CharField(max_length=10)
     fecha_status = models.DateField()
@@ -703,7 +705,7 @@ class Scgsist(models.Model):
     
 class Scgtapl(models.Model):
     tipo_aplica = models.CharField(primary_key=True, max_length=4, null=False)
-    descripcion = models.CharField(max_length=50)
+    descripcion = models.CharField(max_length=40)
     uso = models.CharField(max_length=4, null=False)
     creado_por = models.CharField(max_length=10, null=False)
     fecha_creado = models.DateField()
@@ -738,6 +740,7 @@ class Scgtasi(models.Model):
 class Scgtitr(models.Model):
     sistema = models.CharField(max_length=3, null=False)
     transaccion = models.CharField(max_length=3, null=False)
+    descripcion = models.CharField(max_length=40, null=False)
     creado_por = models.CharField(max_length=10, null=False)
     fecha_creado = models.DateField()
     hora_creado = models.TimeField()
@@ -802,6 +805,70 @@ class Scgvari(models.Model):
         db_table = 'scgvari'
         unique_together = ('libro', 'tipo_aplica', 'clase', 'subclase', 'secuencia')
 
+class Scgasct(models.Model):
+    compania = models.CharField(max_length=3, null=False)
+    agencia = models.CharField(max_length=3, null=False)
+    no_asiento = models.IntegerField(null=False)
+    creado_por = models.CharField(max_length=10, null=False)
+    fecha_creado = models.DateField(null=False)
+    hora_creado = models.TimeField(null=False)
+    compte = models.CharField(max_length=20, null=False)
+    concepto_asiento = models.CharField(max_length=250)
+    fecha_asiento = models.DateField(null=False)
+    monto_balance = models.DecimalField(max_digits=15, decimal_places=2)
+    ano_fiscal = models.SmallIntegerField()
+    mes_fiscal = models.SmallIntegerField()
+    tipo_asiento = models.CharField(max_length=1, null=False)
+    tipo_comprobante = models.CharField(max_length=3, null=False)
+    sistema_origen = models.CharField(max_length=3, null=False)
+    diarizado_por = models.CharField(max_length=10, null=False)
+    fecha_diario = models.DateField()
+    hora_diario = models.TimeField()
+    status = models.CharField(max_length=1, null=False)
+    id = models.IntegerField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'scgasct'
+        unique_together = (('compania', 'agencia', 'no_asiento'),)
+
+class Scgascta(models.Model):
+    compania = models.CharField(max_length=3, null=False)
+    agencia = models.CharField(max_length=3, null=False)
+    no_asiento = models.IntegerField(null=False)
+    linea_asiento = models.SmallIntegerField(null=False)
+    cuenta = models.CharField(max_length=20, null=False)
+    descripcion = models.CharField(max_length=100, null=False)
+    debito = models.DecimalField(max_digits=15, decimal_places=2, null=False)
+    credito = models.DecimalField(max_digits=15, decimal_places=2, null=False)
+    id = models.IntegerField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'scgascta'
+        unique_together = (('compania', 'agencia', 'no_asiento', 'linea_asiento'),)
+
+class Scgterc(models.Model):
+    tercero = models.CharField(primary_key=True, max_length=6, null=False)
+    descripcion = models.CharField(max_length=40, null=False)
+    creado_por = models.CharField(max_length=10, null=False)
+    fecha_creado = models.DateField(null=False)
+    hora_creado = models.TimeField(null=False)
+    tipo_interno = models.CharField(max_length=1, null=False)
+    no_cedula = models.CharField(max_length=12)
+    no_ruc = models.CharField(max_length=25)
+    digito_verificador = models.SmallIntegerField()
+    no_placa = models.CharField(max_length=6)
+    status = models.CharField(max_length=1, null=False)
+    modificado_por = models.CharField(max_length=10)
+    fecha_status = models.DateField()
+    hora_status = models.TimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'scgterc'
+    
+
 class Segpaag(models.Model):
     compania = models.CharField(max_length=3, null=False)
     agencia = models.CharField(max_length=3, null=False)
@@ -823,3 +890,4 @@ class Segpaag(models.Model):
         managed = False
         db_table = 'segpaag'
         unique_together = (('compania', 'agencia', 'aplicacion', 'parametro'),)
+

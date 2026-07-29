@@ -259,4 +259,16 @@ class SegUserFilterView(generics.ListAPIView):
     queryset = SegUser.objects.all()
     serializer_class = SegUserSerializer
     filter_backends = [DjangoFilterBackend]  
-    filterset_fields = ['nombre_usuario']  
+    filterset_fields = ['nombre_usuario']
+
+class SegParaFilterView(generics.ListAPIView):
+    queryset = SegUser.objects.all()
+    serializer_class = SegParaSerializer
+    filter_backends = [DjangoFilterBackend]  
+    filterset_fields = ['status']
+
+class SegGereFilterView(generics.ListAPIView):
+    queryset = SegGere.objects.all()
+    serializer_class = SegGereSerializer
+    filter_backends = [DjangoFilterBackend]  
+    filterset_fields = ['status']  

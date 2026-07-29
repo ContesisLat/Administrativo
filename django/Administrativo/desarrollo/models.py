@@ -138,14 +138,17 @@ class SegGere(models.Model):
     descripcion = models.CharField(max_length=50, blank=True, null=True)
     creado_por = models.CharField(max_length=10,blank=True,null=True)
     fecha_creacion = models.DateField(blank=True,null=True)
-    hora_creacion = models.DateTimeField(blank=True,null=True)
+    hora_creacion = models.TimeField(blank=True,null=True)
     modificado_por = models.CharField(max_length=10,blank=True,null=True)
     fecha_status = models.DateField(blank=True,null=True)
-    hora_status = models.DateTimeField(blank=True,null=True)
+    hora_status = models.TimeField(blank=True,null=True)
     status = models.CharField(max_length=1,blank=True,null=True)
+    id = models.IntegerField(primary_key=True, null=False)
 
     class Meta:
-       db_table='seggere'
+       managed = False
+       db_table ='seggere'
+       unique_together = (('compania', 'gerencia'),)
 
 class SegDept(models.Model):
     compania = models.CharField(max_length=3)
@@ -154,14 +157,18 @@ class SegDept(models.Model):
     descripcion = models.CharField(max_length=50, blank=True, null=True)
     creado_por = models.CharField(max_length=10,blank=True, null=True)
     fecha_creacion = models.DateField(blank=True, null=True)
-    hora_creacion = models.DateTimeField(blank=True, null=True)
+    hora_creacion = models.TimeField(blank=True, null=True)
     modificado_por = models.CharField(max_length=10,blank=True, null=True)
     fecha_status = models.DateField(blank=True, null=True)
-    hora_status = models.DateTimeField(blank=True, null=True)
+    hora_status = models.TimeField(blank=True, null=True)
     status = models.CharField(max_length=1,blank=True,null=True)
+    id = models.IntegerField(primary_key=True, null=False)
 
     class Meta:
+        managed = False
         db_table='segdept'
+        unique_together = (('compania', 'gerencia', 'departamento'),)
+
 
 class SegUser(models.Model):
     usuario = models.CharField(primary_key=True, max_length=10)

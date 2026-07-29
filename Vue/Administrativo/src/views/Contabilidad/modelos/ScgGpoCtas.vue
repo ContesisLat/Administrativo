@@ -2,7 +2,7 @@
     <div class="glass-wrapper">
         <!-- ================= HEADER ================= -->
         <div class="top-bar">
-            <div class="title">Servicios a Aeronaves</div>
+            <div class="title">Grupos de Cuentas</div>
             <div class="action-group">
                 <button class="action-btn insert" @click="setMode('insert')" :disabled="!canInsert"
                     :class="{ active: mode === 'insert' }">
