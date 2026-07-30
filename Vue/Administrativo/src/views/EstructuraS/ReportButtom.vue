@@ -16,7 +16,7 @@
             <input class="form-control" type="file" id="formFile" @change="handleFileUpload" style="background-color: transparent; color: black;">
         </div>
         <hr>
-        <div class="SuccessButoms"><button @click="handleClick">cancelar</button><button @click="enviarCorreo" style="background-color:#001982">enviar</button></div>
+        <div class="footer-actions"><button class="action-btn cancel" @click="handleClick">cancelar</button><button class="action-btn confirm" @click="enviarCorreo">enviar</button></div>
 
     </div>
 </template>
@@ -100,12 +100,12 @@ svg{
 .ReportPage{
     min-height: 250px;
     width: 550px;
-    background: whitesmoke;
+    background: white;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 8px;
+    border-radius: 22px;
     display: flex;
     justify-content:left;
     align-items: left;
@@ -127,22 +127,43 @@ svg{
     padding-left: 100%;
 }
 
-.SuccessButoms{
-    justify-content:right;
-    align-items:right;
-    flex-direction: row;
+.footer-actions {
     display: flex;
-    gap: 10px;
-    margin-bottom: 5px;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-top: 1rem;
 }
-.SuccessButoms button{
+
+.action-btn {
+    padding: 7px 16px;
+    border-radius: 14px;
     border: none;
-    border-radius: 4px;
-    background-color: #24292F;
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    width: 90px;
-    font-size: small;
-    padding: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+.action-btn.active {
+    border: 2px solid currentColor;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+}
+
+.action-btn.confirm {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.action-btn.cancel {
+    background: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
 }
 </style>

@@ -1,4 +1,4 @@
-// src/composables/useAlert.ts
+// src/store/useAlert.ts
 import Swal from 'sweetalert2'
 
 export function useAlert() {

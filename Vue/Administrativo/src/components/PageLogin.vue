@@ -5,7 +5,7 @@
             <!-- LEFT -->
             <aside class="login-left">
                 <div class="brand">
-                    <!-- aquí puedes poner tu logo -->
+                   
                     <img src="@/assets/LogoCorto.png" class="brand-logo" />
                 </div>
 

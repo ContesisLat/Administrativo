@@ -138,7 +138,7 @@
             </table>
         </div>
 
-        <!-- ================= FOOTER ACCIONES ================= -->
+        <!-- ================= FOOTER ACTIONS ================= -->
         <div class="footer-actions" v-if="['insert', 'search', 'edit', 'delete'].includes(mode)">
             <button class="action-btn cancel" @click="resetAll" :disabled="isViewMode"
                 aria-label="Cancelar">Cancelar</button>
@@ -161,7 +161,7 @@ import { userGlobalStore } from '@/store/userGlobal';
 import { useDateTimeStore } from '@/store/dateTimeStore';
 import { useAlert } from '@/store/useAlert';
 
-// Alerta de feedback
+// Alerts
 const { success, error, question, warning } = useAlert();
 
 // URL y Stores
@@ -269,7 +269,7 @@ const companias = ref<any[]>([]);
 const aeronaves = ref<any[]>([]);
 const cargos = ref<any[]>([]);
 
-// ================= NAVEGACIÓN =================
+// ================= NAVIGATION =================
 const dataList = ref<any[]>([]);
 const currentIndex = ref(0);
 const canNavigate = ref(false);
@@ -528,7 +528,7 @@ const handleDelete = async () => {
     }
 };
 
-// ================= BÚSQUEDA =================
+// ================= SEARCH =================
 const handleSearch = async () => {
     if (isProcessing.value) return;
     isProcessing.value = true;
@@ -605,7 +605,7 @@ const resetAll = () => {
     canNavigate.value = false;
 };
 
-// ================= AGREGAR / ELIMINAR FILAS =================
+// ================= INSERT / DELETE ROWS =================
 function addRow() {
     registros.value.push({
         cargo: '',
