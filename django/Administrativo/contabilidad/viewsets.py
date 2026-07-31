@@ -1,8 +1,12 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .models import *
+from desarrollo.models import SegPara
 from .serializer import *
 
+class SegparaViewSet(viewsets.ModelViewSet):
+    qeryset = SegPara.objects.all()
+    serializer_class = SegparaSerializer
 
 class ScgaageViewSet(viewsets.ModelViewSet):
     queryset = Scgaage.objects.all()
@@ -180,6 +184,18 @@ class ScgvariViewSet(viewsets.ModelViewSet):
     queryset = Scgvari.objects.all()
     serializer_class = ScgvariSerializer
 
+class ScgasctViewSet(viewsets.ModelViewSet):
+    queryset = Scgasct.objects.all()
+    serializer_class = ScgasctSerializer
+
+class ScgasctaViewSet(viewsets.ModelViewSet):
+    queryset = Scgascta.objects.all()
+    serializer_class = ScgasctaSerializer
+
+class ScgtercViewSet(viewsets.ModelViewSet):
+    queryset = Scgterc.objects.all()
+    serializer_class = ScgtercSerializer
+    
 class SegpaagViewSet(viewsets.ModelViewSet):
     queryset = Segpaag.objects.all()
     serializer_class = SegpaagSerializer

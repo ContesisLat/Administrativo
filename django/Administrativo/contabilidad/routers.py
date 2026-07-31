@@ -9,8 +9,8 @@ class ContabilidadRouter(object):
         """
         if model._meta.app_label == 'contabilidad':
             return 'contabilidad_db'
-        return None
-
+        return 'default'
+    
     def db_for_write(self, model, **hints):
         """
         Attempts to write mi_app_2 models go to mi_db_2.

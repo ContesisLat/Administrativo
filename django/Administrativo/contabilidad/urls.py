@@ -4,6 +4,7 @@ from django.urls import path
 #from .excelviews import *
 from rest_framework import routers
 from .viewsets import *
+from desarrollo.viewsets import *
 from .views import *
 from .crud import *
 
@@ -48,31 +49,34 @@ route.register('scgperi', ScgperiViewSet),
 route.register('scgperiodo', ScgperiodoViewSet),
 route.register('scgsgcta', ScgsgctaViewSet),
 route.register('scgsist', ScgsistViewSet),
-route.register('scgtapl', ScgtaplViewSet),
+route.register('scgtapl', ScgtaplViewSet), 
 route.register('scgtasi', ScgtasiViewSet),
 route.register('scgtitr', ScgtitrViewSet),
 route.register('scgtran', ScgtranViewSet),
-route.register('scgvari', ScgvariViewSet)
+route.register('scgvari', ScgvariViewSet),
+route.register('scgasct', ScgasctViewSet),
+route.register('scgascta', ScgasctaViewSet),
+route.register('scgterc', ScgtercViewSet),
+route.register('seggere', SegGereViewSet),
+route.register('segdept', SegDeptViewSet),
  
 
 urlpatterns = [
-   path('scgcata', catalogo_cuentas, name='catalogo_cuentas')
-    
-     
-    #path('cardmani/filter', CardmaniFilterView.as_view(), name='cardmani-filter'),
-     
-    #path('query',query_global, name='query_global'),
-    #path('guardar-imagenes',guardar_archivos, name='guardar-imagenes'),
-    #path('informe-entrega',informe_entrega, name='informe-entrega'),
-    #path('Regmani_excel',excel_regmani,name='Regmani_excel'),
-    #path('Caratvue_excel', excel_caratvue, name='Caratvue_excel'),
-    #path('Logctmo_excel', excel_logctmo, name="excel_logctmo"),
-    #path('AuxLogctmo_excel', excel_auxlogctmo, name="excel_auxlogctmo"),
-    #path('Caratvue_excel_resumen', excel_caratvue_resumen, name="excel_caratvue_resumen"),
-    #path('Reporte_Ait', excel_reporte_ait, name="excel_reporte_ait"),
-    #path('ResCargaOpera', excel_resumen_caropera, name="excel_resumen_caropera"),
-    #path('insert/', InsertView.as_view(), name='insert'),  # Ruta para insertar un nuevo registro
-    #path('update/', UpdateView.as_view(), name='update'),  # Ruta para actualizar un registro
-    #path('delete/', DeleteView.as_view(), name='delete'),  # Ruta para eliminar un registro
+    path('segpaag_defaults/', segpaag_defaults, name='segpaag_defaults'),
+    path('scgcata', catalogo_cuentas, name='catalogo_cuentas'),
+    path('scgcata/valida/', valida_cuentas, name='valida_cuentas'),
+    path('scgterc/valida', valida_terceros, name="valida_terceros"),
+    path('scggcta/filter', ScggctaFilterView.as_view(), name='scggcta-filter'),
+    path('scgsgcta/filter/', ScgsgctaFilterView.as_view(), name='scgsgcta-filter'),
+    path('scgtitr/filter/', ScgtitrFilterView.as_view(), name='scgtitr-filter'),
+    path('scgscla/filter/', ScgsclaFilterView.as_view(), name='scgscla-filter'),
+    path('scgtapl/filter', ScgtaplFilterView.as_view(), name='scgtapl-filter'),
+    path('query',query_global, name='query_global'),
+    path('querytpy/',query_globaltpy, name='query_globaltpy'),
+    path('insert/', InsertView.as_view(), name='insert'),  # Ruta para insertar un nuevo registro
+    path('update/', UpdateView.as_view(), name='update'),  # Ruta para actualizar un registro
+    path('delete/', DeleteView.as_view(), name='delete'),  # Ruta para eliminar un registro
+    path('insertTpy/', InsertViewTpy.as_view(), name='insertTpy'),
+    path('updatetpy/', UpdateViewTpy.as_view(), name='updatetpy'),
 ]
 urlpatterns += route.urls

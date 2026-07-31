@@ -61,6 +61,7 @@ route.register('seghpas',SegHpasViewSet)
 urlpatterns = [
     path('seguser/login',api_view(['POST'])(login_view)),
     path('seguser/filter', SegUserFilterView.as_view(), name='seguser-filter'),
+    path('segpara/filter', SegParaFilterView.as_view(), name='segpara-filter'),
     path('envio_correo',EnviarCorreoView.as_view(),name='envio_correo'),
     path('barcode',barcode_reader,name='barcode'),
     path('procesos_subprogramas',obtener_programas_y_subprogramas,name='procesos_subprogramas'),

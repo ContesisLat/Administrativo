@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps,defineEmits,Ref,ref } from 'vue'
+import { defineProps, defineEmits,Ref,ref } from 'vue'
 import { useDateTimeStore } from '@/store/dateTimeStore';
 import { userGlobalStore } from '@/store/userGlobal';
 import { UrlGlobal } from '@/store/dominioGlobal';

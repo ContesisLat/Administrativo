@@ -58,6 +58,9 @@ class SegParaViewSet(viewsets.ModelViewSet):
     queryset = SegPara.objects.all()
     serializer_class = SegParaSerializer
 
+    def get_queryset(self):
+        return SegPara.objects.using('default').all()
+
 class SegAperfViewSet(viewsets.ModelViewSet):
     queryset = SegAperf.objects.all()
     serializer_class = SegAperfSerializer
